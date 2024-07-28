@@ -1,0 +1,40 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+.container-wrapper {
+  display: flex;
+  flex: 1;
+  height: 50%; /* Total height taken up by containers */
+  width: 100%;
+  margin-top: 20%; /* 25% margin from the top */
+  margin-bottom: 20%; /* 25% margin from the bottom */
+}
+
+.container {
+  flex: 1;
+  margin: 5px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container:not(:last-child) {
+  margin-right: 10px; /* Space between containers horizontally */
+}
+
+.container3-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%; /* Takes up the remaining 50% vertically */
+  width: 100%;
+}
