@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className='title'>DSA Project 3</h1>
+        <div className='sectionsContainer'>
+          <div className='section'>
+            <div className='sectionTitle'>Sort Type</div>
+            <div className='sortButtonsContainer'>
+              <button className='sortButton'>Merge sort</button>
+              <button className='sortButton'>Quick sort</button>
+              <button className='sortButton'>Shell sort</button>
+            </div>
+          </div>
+          <div className='section'>
+          <div className='sectionTitle'>Data Type</div>
+            <div className='sortButtonsContainer'>
+              <button className='sortButton'>Movie popularities</button>
+              <button className='sortButton'>Actor Names(lexographically)</button>
+              <button className='sortButton'>Cars (by price)</button>
+            </div>
+          </div>
+          <div className='section'>
+            <div className='sectionTitle'>Results</div>
+            <div className='resultsContainer'>
+              <div className='resultsText'>Time: </div>
+              <div className='resultsText'>Tuples sorted: </div>
+              <button className='submitButton'> Submit</button>
+          </div>
+          </div>
+        </div>
     </div>
   );
 }
