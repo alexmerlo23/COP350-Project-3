@@ -7,26 +7,25 @@ function App() {
   const [selectedDataType, setSelectedDataType] = useState('');
   const [selectedSortType, setSelectedSortType] = useState('');
   const [sortedData, setSortedData] = useState(null);
-  const [columnName, setColumnName] = useState(''); // State to hold the column name
+  const [columnName, setColumnName] = useState('');
 
   const handleDataTypeClick = (dataType) => {
     setSelectedDataType(dataType);
-    // Set column name based on data type
     let column;
     switch (dataType) {
       case 'Movie popularities':
         column = 'popularity';
         break;
       case 'Actor Names(lexographically)':
-        column = 'actor_name'; // Example column name
+        column = 'actor_name';
         break;
       case 'Cars (by price)':
-        column = 'Price (USD)'; 
+        column = 'Price (USD)';
         break;
       default:
         return;
     }
-    setColumnName(column); // Set the column name
+    setColumnName(column);
     fetchCsv(dataType, column);
   };
 
@@ -40,42 +39,93 @@ function App() {
       return;
     }
 
-    // Example sorting logic based on selected sort type
     let sorted = [...csvData];
+    let startTime, endTime, timeTaken;
+
     switch (selectedSortType) {
       case 'Merge sort':
+        startTime = performance.now();
         sorted = mergeSort(sorted);
+        endTime = performance.now();
         break;
       case 'Quick sort':
+        startTime = performance.now();
         sorted = quickSort(sorted);
+        endTime = performance.now();
         break;
       case 'Shell sort':
+        startTime = performance.now();
         sorted = shellSort(sorted);
+        endTime = performance.now();
         break;
       default:
         break;
     }
+
+    timeTaken = endTime - startTime;
     setSortedData(sorted);
+
+    const timeInSeconds = (timeTaken / 1000).toFixed(6);
+    
+    // Update the results section with the time taken
+    document.querySelector('.resultsText').textContent = `Time: ${timeInSeconds} seconds`;
   };
 
-  // Implement your sorting algorithms here
   const mergeSort = (data) => {
-     // Log each item in the data for testing
-     console.log("Merge sort data:");
-     data.forEach(item => console.log(item));
-     // For now, return the unmodified data
-     return data;
+    if (data.length <= 1) {
+      return data;
+    }
+  
+    const middle = Math.floor(data.length / 2);
+    const left = data.slice(0, middle);
+    const right = data.slice(middle);
+  
+    return merge(mergeSort(left), mergeSort(right));
   };
+  
+  const merge = (left, right) => {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+  
+    // Merge the two sorted arrays into one
+    while (leftIndex < left.length && rightIndex < right.length) {
+      if (left[leftIndex] < right[rightIndex]) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+      } else {
+        result.push(right[rightIndex]);
+        rightIndex++;
+      }
+    }
+  
+    // Concatenate any remaining elements
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  };
+  
 
   const quickSort = (data) => {
-    // Your quick sort logic
-    console.log("quick");
-    return data;
+    if (data.length <= 1) return data;
+    const pivot = data[Math.floor(data.length / 2)];
+    const left = data.filter(x => x < pivot);
+    const right = data.filter(x => x > pivot);
+    return [...quickSort(left), pivot, ...quickSort(right)];
   };
 
   const shellSort = (data) => {
-    // Your shell sort logic
-    console.log("shell");
+    let n = data.length;
+    let gap = Math.floor(n / 2);
+    while (gap > 0) {
+      for (let i = gap; i < n; i++) {
+        let temp = data[i];
+        let j;
+        for (j = i; j >= gap && data[j - gap] > temp; j -= gap) {
+          data[j] = data[j - gap];
+        }
+        data[j] = temp;
+      }
+      gap = Math.floor(gap / 2);
+    }
     return data;
   };
 
@@ -83,13 +133,13 @@ function App() {
     let csvFile = '';
     switch(dataType) {
       case 'Movie popularities':
-        csvFile = './data/movie_data.csv';  // Ensure path is correct
+        csvFile = 'movie_data.csv';
         break;
       case 'Actor Names(lexographically)':
-        csvFile = '/data/actor_names.csv';  // Ensure path is correct
+        csvFile = './actor_names.csv';      //This does not exist. Could change to another data set.
         break;
       case 'Cars (by price)':
-        csvFile = './data/car_data.csv';  // Ensure path is correct
+        csvFile = 'car_data.csv';
         break;
       default:
         return;
@@ -103,12 +153,10 @@ function App() {
         return response.text();
       })
       .then(data => {
-        console.log('Raw CSV data:', data); // Log raw CSV data
         const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
-        console.log('Parsed data:', parsedData); // Log parsed data
         const columnData = parsedData.data.map(row => row[column]).filter(value => value !== undefined);
-        console.log('Fetched CSV Data:', columnData); // Log fetched data
-        setCsvData(columnData); // Set csvData to the selected column data
+        console.log('Fetched CSV Data:', columnData);
+        setCsvData(columnData);
       })
       .catch(error => console.error('Error fetching the CSV file:', error));
   };
@@ -141,7 +189,7 @@ function App() {
             <div className='sectionTitle'>Results</div>
             <div className='resultsContainer'>
               <div className='resultsText'>Time: </div>
-              <div className='resultsText'>Tuples sorted: </div>
+              <div className='resultsText'>Tuples sorted: {csvData ? csvData.length : 0}</div>
               <button className='submitButton' onClick={handleSubmit}>Submit</button>
           </div>
           </div>
