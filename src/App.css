@@ -84,6 +84,11 @@
   background-color: #208cff;
 }
 
+.sortButton.selected {
+  background-color: #208cff;
+  color: rgb(0, 0, 0);
+}
+
 .resultsContainer {
   display: flex;
   flex-direction: column;
