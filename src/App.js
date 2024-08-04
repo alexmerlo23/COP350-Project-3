@@ -185,7 +185,7 @@ function App() {
   const radixSort = (data) => {
     data = data.filter(Number.isInteger);
 
-    if (data.length === 0) return data;
+    if (data.length == 0) return data;
 
     // Find the maximum number to determine the number of digits
     const max = getMax(data);
