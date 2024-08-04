@@ -16,8 +16,8 @@ function App() {
       case 'Movie popularities':
         column = 'popularity';
         break;
-      case 'Actor Names(lexographically)':
-        column = 'actor_name';
+      case 'Movie Name A-Z':
+        column = 'movie_name';
         break;
       case 'Cars (by price)':
         column = 'Price (USD)';
@@ -32,14 +32,15 @@ function App() {
   const handleSortTypeClick = (sortType) => {
     setSelectedSortType(sortType);
   };
-
   const handleSubmit = () => {
     if (!selectedDataType || !selectedSortType) {
       alert('Please select both a data type and a sort type.');
       return;
     }
 
-    let sorted = [...csvData];
+    // Filter out movies with null or empty names
+    let filteredData = csvData.filter(name => name && name.trim() !== '');
+    let sorted = [...filteredData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
@@ -58,6 +59,9 @@ function App() {
         sorted = shellSort(sorted);
         endTime = performance.now();
         break;
+
+        //heapsort Felipe.
+        //counting sort.
       default:
         break;
     }
@@ -66,28 +70,36 @@ function App() {
     setSortedData(sorted);
 
     const timeInSeconds = (timeTaken / 1000).toFixed(6);
-    
-    // Update the results section with the time taken
-    document.querySelector('.resultsText').textContent = `Time: ${timeInSeconds} seconds`;
+
+    // Get the names of the first 3 movies, or less if fewer movies exist
+    const topMovies = sorted.slice(0, 3).join(', ');
+    const last3Movies = sorted.slice(-3).join(', ');
+
+    // Update the results section with the time taken and the top 3 movies
+    document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
+    document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${filteredData.length}`;
+    document.querySelector('.resultsTopMovies').textContent = `Top 3 Movies: ${topMovies}`;
+    document.querySelector('.resultsLastMovies').textContent = `Last 3 Movies: ${last3Movies}`;
   };
+
 
   const mergeSort = (data) => {
     if (data.length <= 1) {
       return data;
     }
-  
+
     const middle = Math.floor(data.length / 2);
     const left = data.slice(0, middle);
     const right = data.slice(middle);
-  
+
     return merge(mergeSort(left), mergeSort(right));
   };
-  
+
   const merge = (left, right) => {
     let result = [];
     let leftIndex = 0;
     let rightIndex = 0;
-  
+
     // Merge the two sorted arrays into one
     while (leftIndex < left.length && rightIndex < right.length) {
       if (left[leftIndex] < right[rightIndex]) {
@@ -98,11 +110,11 @@ function App() {
         rightIndex++;
       }
     }
-  
+
     // Concatenate any remaining elements
     return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   };
-  
+
 
   const quickSort = (data) => {
     if (data.length <= 1) return data;
@@ -135,8 +147,8 @@ function App() {
       case 'Movie popularities':
         csvFile = 'movie_data.csv';
         break;
-      case 'Actor Names(lexographically)':
-        csvFile = './actor_names.csv';      //This does not exist. Could change to another data set.
+      case 'Movie Name A-Z':
+        csvFile = 'movie_data.csv';
         break;
       case 'Cars (by price)':
         csvFile = 'car_data.csv';
@@ -146,19 +158,19 @@ function App() {
     }
 
     fetch(csvFile)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        return response.text();
-      })
-      .then(data => {
-        const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
-        const columnData = parsedData.data.map(row => row[column]).filter(value => value !== undefined);
-        console.log('Fetched CSV Data:', columnData);
-        setCsvData(columnData);
-      })
-      .catch(error => console.error('Error fetching the CSV file:', error));
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.text();
+        })
+        .then(data => {
+          const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
+          const columnData = parsedData.data.map(row => row[column]).filter(value => value !== undefined);
+          console.log('Fetched CSV Data:', columnData);
+          setCsvData(columnData);
+        })
+        .catch(error => console.error('Error fetching the CSV file:', error));
   };
 
   const buttonClass = (type, selectedType) => {
@@ -166,8 +178,8 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1 className='title'>DSA Project 3</h1>
+      <div className="App">
+        <h1 className='title'>DSA Project 3</h1>
         <div className='sectionsContainer'>
           <div className='section'>
             <div className='sectionTitle'>Sort Type</div>
@@ -181,20 +193,22 @@ function App() {
             <div className='sectionTitle'>Data Type</div>
             <div className='sortButtonsContainer'>
               <button className={buttonClass('Movie popularities', selectedDataType)} onClick={() => handleDataTypeClick('Movie popularities')}>Movie popularities</button>
-              <button className={buttonClass('Actor Names(lexographically)', selectedDataType)} onClick={() => handleDataTypeClick('Actor Names(lexographically)')}>Actor Names(lexographically)</button>
+              <button className={buttonClass('Movie Name A-Z', selectedDataType)} onClick={() => handleDataTypeClick('Movie Name A-Z')}>Movie Name A-Z</button>
               <button className={buttonClass('Cars (by price)', selectedDataType)} onClick={() => handleDataTypeClick('Cars (by price)')}>Cars (by price)</button>
             </div>
           </div>
           <div className='section'>
             <div className='sectionTitle'>Results</div>
             <div className='resultsContainer'>
-              <div className='resultsText'>Time: </div>
-              <div className='resultsText'>Tuples sorted: {csvData ? csvData.length : 0}</div>
+              <div className='resultsTime'>Time: </div>
+              <div className='resultsTuples'>Tuples sorted: {csvData ? csvData.length : 0}</div>
+              <div className='resultsTopMovies'>Top 3 Movies: </div>
+              <div className='resultsLastMovies'>Last 3 Movies: </div>
               <button className='submitButton' onClick={handleSubmit}>Submit</button>
-          </div>
+            </div>
           </div>
         </div>
-    </div>
+      </div>
   );
 }
 
