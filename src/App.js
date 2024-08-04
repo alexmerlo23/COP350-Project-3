@@ -59,9 +59,12 @@ function App() {
         sorted = shellSort(sorted);
         endTime = performance.now();
         break;
+      case 'Radix sort':
+        startTime = performance.now();
+        sorted = radixSort(sorted);
+        endTime = performance.now();
+        break;
 
-        //heapsort Felipe.
-        //counting sort.
       default:
         break;
     }
@@ -141,6 +144,60 @@ function App() {
     return data;
   };
 
+  const getMax = (data) => {
+    let max = data[0];
+    for (let i = 1; i < data.length; i++) {
+      if (data[i] > max) {
+        max = data[i];
+      }
+    }
+    return max;
+  };
+
+  const countSort = (data, exp) => {
+    const n = data.length;
+    const output = new Array(n).fill(0);  // Output array to store sorted numbers
+    const count = new Array(10).fill(0);  // Count array to store occurrences of digits
+
+    // Store the count of occurrences in count[]
+    for (let i = 0; i < n; i++) {
+      const index = Math.floor(data[i] / exp) % 10;
+      count[index]++;
+    }
+
+    // Change count[i] so that it now contains the actual position of this digit in the output array
+    for (let i = 1; i < 10; i++) {
+      count[i] += count[i - 1];
+    }
+
+    // Build the output array by sorting the data according to the current digit
+    for (let i = n - 1; i >= 0; i--) {
+      const index = Math.floor(data[i] / exp) % 10;
+      output[count[index] - 1] = data[i];
+      count[index]--;
+    }
+
+    // Copy the output array to data[], so that data now contains sorted numbers according to the current digit
+    for (let i = 0; i < n; i++) {
+      data[i] = output[i];
+    }
+  };
+  const radixSort = (data) => {
+    data = data.filter(Number.isInteger);
+
+    if (data.length === 0) return data;
+
+    // Find the maximum number to determine the number of digits
+    const max = getMax(data);
+
+    // Do counting sort for every digit. exp is 10^i where i is the current digit number
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+      countSort(data, exp);
+    }
+
+    return data;
+  };
+
   const fetchCsv = (dataType, column) => {
     let csvFile = '';
     switch(dataType) {
@@ -179,7 +236,7 @@ function App() {
 
   return (
       <div className="App">
-        <h1 className='title'>DSA Project 3</h1>
+        <h1 className='title'> DSA Project 3</h1>
         <div className='sectionsContainer'>
           <div className='section'>
             <div className='sectionTitle'>Sort Type</div>
@@ -187,6 +244,7 @@ function App() {
               <button className={buttonClass('Merge sort', selectedSortType)} onClick={() => handleSortTypeClick('Merge sort')}>Merge sort</button>
               <button className={buttonClass('Quick sort', selectedSortType)} onClick={() => handleSortTypeClick('Quick sort')}>Quick sort</button>
               <button className={buttonClass('Shell sort', selectedSortType)} onClick={() => handleSortTypeClick('Shell sort')}>Shell sort</button>
+              <button className={buttonClass('Radix sort', selectedSortType)} onClick={() => handleSortTypeClick('Radix sort')}>Radix sort</button>
             </div>
           </div>
           <div className='section'>
