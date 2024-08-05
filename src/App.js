@@ -183,7 +183,6 @@ function App() {
     }
   };
   const radixSort = (data) => {
-    data = data.filter(Number.isInteger);
 
     if (data.length == 0) return data;
 
