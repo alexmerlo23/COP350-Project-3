@@ -18,6 +18,14 @@
   font-size: 30px;
 }
 
+.logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 150px; /* Adjust the size as needed */
+  height: 90px; /* Adjust the size as needed */
+}
+
 .sectionsContainer {
   border: 2px solid rgb(0, 0, 0);
   width: 95%;

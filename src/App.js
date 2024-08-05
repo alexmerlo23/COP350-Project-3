@@ -75,14 +75,14 @@ function App() {
     const timeInSeconds = (timeTaken / 1000).toFixed(6);
 
     // Get the names of the first 3 movies, or less if fewer movies exist
-    const topMovies = sorted.slice(0, 3).join(', ');
-    const last3Movies = sorted.slice(-3).join(', ');
+    const last3Movies = sorted.slice(0, 3).join(', ');
+    const topMovies = sorted.slice(-3).join(', ');
 
     // Update the results section with the time taken and the top 3 movies
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
     document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${filteredData.length}`;
-    document.querySelector('.resultsTopMovies').textContent = `Top 3 Movies: ${topMovies}`;
-    document.querySelector('.resultsLastMovies').textContent = `Last 3 Movies: ${last3Movies}`;
+    document.querySelector('.resultsTopMovies').textContent = `Top 3: ${topMovies}`;
+    document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Movies}`;
   };
 
 
@@ -202,13 +202,13 @@ function App() {
     let csvFile = '';
     switch(dataType) {
       case 'Movie popularities':
-        csvFile = 'movie_data.csv';
+        csvFile = 'cleaned_movie_data.csv';
         break;
       case 'Movie Name A-Z':
-        csvFile = 'movie_data.csv';
+        csvFile = 'cleaned_movie_data.csv';
         break;
       case 'Cars (by price)':
-        csvFile = 'car_data.csv';
+        csvFile = 'cleaned_car_data.csv';
         break;
       default:
         return;
@@ -237,6 +237,7 @@ function App() {
   return (
       <div className="App">
         <h1 className='title'> DSA Project 3</h1>
+        <img src="./gator img.jpg" alt="Logo" className="logo" />
         <div className='sectionsContainer'>
           <div className='section'>
             <div className='sectionTitle'>Sort Type</div>
@@ -260,8 +261,8 @@ function App() {
             <div className='resultsContainer'>
               <div className='resultsTime'>Time: </div>
               <div className='resultsTuples'>Tuples sorted: {csvData ? csvData.length : 0}</div>
-              <div className='resultsTopMovies'>Top 3 Movies: </div>
-              <div className='resultsLastMovies'>Last 3 Movies: </div>
+              <div className='resultsTopMovies'>Top 3: </div>
+              <div className='resultsLastMovies'>Last 3: </div>
               <button className='submitButton' onClick={handleSubmit}>Submit</button>
             </div>
           </div>
