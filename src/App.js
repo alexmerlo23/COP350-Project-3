@@ -243,16 +243,16 @@ function App() {
     let csvFile = '';
     switch(dataType) {
       case 'Movie popularities':
-        csvFile = 'cleaned_movie_data.csv';
+        csvFile = './cleaned_movie_data.csv';
         break;
       case 'Movie Name A-Z':
-        csvFile = 'cleaned_movie_data.csv';
+        csvFile = './cleaned_movie_data.csv';
         break;
       case 'Cars (by price)':
-        csvFile = 'cleaned_car_data.csv';
+        csvFile = './cleaned_car_data.csv';
         break;
       case 'Cost of Living Index by Country':
-        csvFile = 'Cost_of_Living_Index_by_Country_2024.csv';  //file name may be changed
+        csvFile = './Cost_of_Living_Index_by_Country_2024.csv';  //file name may be changed
         break;
       default:
         return;
