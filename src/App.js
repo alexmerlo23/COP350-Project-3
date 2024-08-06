@@ -64,6 +64,12 @@ function App() {
         sorted = radixSort(sorted);
         endTime = performance.now();
         break;
+      case 'Heap sort':
+        startTime = performance.now();
+        sorted = heapSort(sorted);
+        endTime = performance.now();
+        break;
+
 
       default:
         break;
@@ -198,6 +204,49 @@ function App() {
     return data;
   };
 
+  const heapSort = (data) => {
+    const n = data.length;
+
+    // Build a max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      heapify(data, n, i);
+    }
+
+    // Extract elements from the heap one by one
+    for (let i = n - 1; i > 0; i--) {
+      // Move the current root (maximum) to the end
+      [data[0], data[i]] = [data[i], data[0]];
+      // Call max heapify on the reduced heap
+      heapify(data, i, 0);
+    }
+
+    return data;
+  };
+
+  const heapify = (data, n, i) => {
+    let largest = i; // Initialize largest as root
+    let left = 2 * i + 1; // left child
+    let right = 2 * i + 2; // right child
+
+    // If left child is larger than root
+    if (left < n && data[left] > data[largest]) {
+      largest = left;
+    }
+
+    // If right child is larger than the largest so far
+    if (right < n && data[right] > data[largest]) {
+      largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+      [data[i], data[largest]] = [data[largest], data[i]]; // Swap
+
+      // Recursively heapify the affected sub-tree
+      heapify(data, n, largest);
+    }
+  };
+
   const fetchCsv = (dataType, column) => {
     let csvFile = '';
     switch(dataType) {
@@ -246,6 +295,7 @@ function App() {
               <button className={buttonClass('Quick sort', selectedSortType)} onClick={() => handleSortTypeClick('Quick sort')}>Quick sort</button>
               <button className={buttonClass('Shell sort', selectedSortType)} onClick={() => handleSortTypeClick('Shell sort')}>Shell sort</button>
               <button className={buttonClass('Radix sort', selectedSortType)} onClick={() => handleSortTypeClick('Radix sort')}>Radix sort</button>
+              <button className={buttonClass('Heap sort', selectedSortType)} onClick={() => handleSortTypeClick('Heap sort')}>Heap sort</button>
             </div>
           </div>
           <div className='section'>
