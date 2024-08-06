@@ -1,13 +1,14 @@
-# Create a new folder
+# Directions
+1. Create a new folder
 
-# Open folder in IDE
+2. Open folder in IDE
 
-# Open terminal in IDE
+3. Open terminal in IDE
 
-# git clone https://github.com/alexmerlo23/COP3530-Project-3.git
+4. git clone https://github.com/alexmerlo23/COP3530-Project-3.git
 
-# cd to COP3530-Project-3 directory
+5. cd to COP3530-Project-3 directory
 
-# NPM install
+6. NPM install
 
-# NPM start
+7. NPM start
