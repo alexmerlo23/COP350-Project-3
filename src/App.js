@@ -38,7 +38,6 @@ function App() {
       return;
     }
 
-    // Filter out movies with null or empty names
     let filteredData = csvData.filter(name => name && name.trim() !== '');
     let sorted = [...filteredData];
     let startTime, endTime, timeTaken;
@@ -74,11 +73,9 @@ function App() {
 
     const timeInSeconds = (timeTaken / 1000).toFixed(6);
 
-    // Get the names of the first 3 movies, or less if fewer movies exist
     const topMovies = sorted.slice(0, 3).join(', ');
     const last3Movies = sorted.slice(-3).join(', ');
 
-    // Update the results section with the time taken and the top 3 movies
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
     document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${filteredData.length}`;
     document.querySelector('.resultsTopMovies').textContent = `Top 3 Movies: ${topMovies}`;
@@ -103,7 +100,6 @@ function App() {
     let leftIndex = 0;
     let rightIndex = 0;
 
-    // Merge the two sorted arrays into one
     while (leftIndex < left.length && rightIndex < right.length) {
       if (left[leftIndex] < right[rightIndex]) {
         result.push(left[leftIndex]);
@@ -114,7 +110,6 @@ function App() {
       }
     }
 
-    // Concatenate any remaining elements
     return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   };
 
