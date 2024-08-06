@@ -73,12 +73,6 @@ function App() {
         endTime = performance.now();
         break;
 
-      case 'Heap sort':
-        startTime = performance.now();
-        sorted = heapSort(sorted);
-        endTime = performance.now();
-        break;
-
 
       default:
         break;
@@ -221,30 +215,6 @@ function App() {
     }
 
     return data;
-  };
-
-  const heapify = (data, n, i) => {
-    let largest = i; // Initialize largest as root
-    let left = 2 * i + 1; // left child
-    let right = 2 * i + 2; // right child
-
-    // If left child is larger than root
-    if (left < n && data[left] > data[largest]) {
-      largest = left;
-    }
-
-    // If right child is larger than the largest so far
-    if (right < n && data[right] > data[largest]) {
-      largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-      [data[i], data[largest]] = [data[largest], data[i]]; // Swap
-
-      // Recursively heapify the affected sub-tree
-      heapify(data, n, largest);
-    }
   };
 
   const fetchCsv = (dataType, column) => {
