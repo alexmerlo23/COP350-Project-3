@@ -22,6 +22,9 @@ function App() {
       case 'Cars (by price)':
         column = 'Price (USD)';
         break;
+      case 'Cost of Living Index by Country':
+        column = 'Cost of Living Index';
+        break;
       default:
         return;
     }
@@ -39,8 +42,8 @@ function App() {
     }
 
     // Filter out movies with null or empty names
-    let filteredData = csvData.filter(name => name && name.trim() !== '');
-    let sorted = [...filteredData];
+    //let filteredData = csvData.filter(name => name && name.trim() !== '');
+    let sorted = [...csvData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
@@ -82,11 +85,11 @@ function App() {
 
     // Get the names of the first 3 movies, or less if fewer movies exist
     const last3Movies = sorted.slice(0, 3).join(', ');
-    const topMovies = sorted.slice(-3).join(', ');
+    const topMovies = sorted.slice(-3).reverse().join(', ');
 
     // Update the results section with the time taken and the top 3 movies
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
-    document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${filteredData.length}`;
+    document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${csvData.length}`;
     document.querySelector('.resultsTopMovies').textContent = `Top 3: ${topMovies}`;
     document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Movies}`;
   };
@@ -162,45 +165,34 @@ function App() {
 
   const countSort = (data, exp) => {
     const n = data.length;
-    const output = new Array(n).fill(0);  // Output array to store sorted numbers
-    const count = new Array(10).fill(0);  // Count array to store occurrences of digits
+    const output = new Array(n).fill(0);  
+    const count = new Array(10).fill(0);  
 
-    // Store the count of occurrences in count[]
     for (let i = 0; i < n; i++) {
       const index = Math.floor(data[i] / exp) % 10;
       count[index]++;
     }
-
-    // Change count[i] so that it now contains the actual position of this digit in the output array
+    
     for (let i = 1; i < 10; i++) {
       count[i] += count[i - 1];
     }
 
-    // Build the output array by sorting the data according to the current digit
     for (let i = n - 1; i >= 0; i--) {
       const index = Math.floor(data[i] / exp) % 10;
       output[count[index] - 1] = data[i];
       count[index]--;
     }
 
-    // Copy the output array to data[], so that data now contains sorted numbers according to the current digit
     for (let i = 0; i < n; i++) {
       data[i] = output[i];
     }
   };
   const radixSort = (data) => {
-    //data = data.filter(Number.isInteger);
-
     if (data.length == 0) return data;
-
-    // Find the maximum number to determine the number of digits
     const max = getMax(data);
-
-    // Do counting sort for every digit. exp is 10^i where i is the current digit number
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
       countSort(data, exp);
     }
-
     return data;
   };
 
@@ -259,6 +251,9 @@ function App() {
       case 'Cars (by price)':
         csvFile = 'cleaned_car_data.csv';
         break;
+      case 'Cost of Living Index by Country':
+        csvFile = 'Cost_of_Living_Index_by_Country_2024.csv';  //file name may be changed
+        break;
       default:
         return;
     }
@@ -272,9 +267,13 @@ function App() {
         })
         .then(data => {
           const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
-          const columnData = parsedData.data.map(row => row[column]).filter(value => value !== undefined);
-          console.log('Fetched CSV Data:', columnData);
-          setCsvData(columnData);
+      const columnData = parsedData.data
+        .map(row => row[column])
+        .filter(value => typeof value === 'string' && value.trim() !== '')
+        .map(value => parseFloat(value.trim()))
+        .filter(value => !isNaN(value));
+      console.log('Fetched CSV Data:', columnData); // Debug log to check data
+      setCsvData(columnData);
         })
         .catch(error => console.error('Error fetching the CSV file:', error));
   };
@@ -302,8 +301,9 @@ function App() {
             <div className='sectionTitle'>Data Type</div>
             <div className='sortButtonsContainer'>
               <button className={buttonClass('Movie popularities', selectedDataType)} onClick={() => handleDataTypeClick('Movie popularities')}>Movie popularities</button>
-              <button className={buttonClass('Movie Name A-Z', selectedDataType)} onClick={() => handleDataTypeClick('Movie Name A-Z')}>Movie Name A-Z</button>
+              <button className={buttonClass('Movie Name A-Z', selectedDataType)} onClick={() => handleDataTypeClick('Movie Name A-Z')}>Movie Name</button>
               <button className={buttonClass('Cars (by price)', selectedDataType)} onClick={() => handleDataTypeClick('Cars (by price)')}>Cars (by price)</button>
+              <button className={buttonClass('Cost of Living Index by Country', selectedDataType)} onClick={() => handleDataTypeClick('Cost of Living Index by Country')}>Cost of Living Index by Country</button>
             </div>
           </div>
           <div className='section'>
