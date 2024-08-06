@@ -6,12 +6,12 @@ function App() {
   const [csvData, setCsvData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState('');
   const [selectedSortType, setSelectedSortType] = useState('');
-  const [sortedData, setSortedData] = useState(null);
-  const [columnName, setColumnName] = useState('');
+  let [sorted, setSortedData] = useState(null);
+  let [column, setColumnName] = useState('');
 
   const handleDataTypeClick = (dataType) => {
     setSelectedDataType(dataType);
-    let column;
+  
     switch (dataType) {
       case 'Movie popularities':
         column = 'popularity';
@@ -43,7 +43,7 @@ function App() {
 
     // Filter out movies with null or empty names
     //let filteredData = csvData.filter(name => name && name.trim() !== '');
-    let sorted = [...csvData];
+    sorted = [...csvData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
@@ -188,7 +188,7 @@ function App() {
     }
   };
   const radixSort = (data) => {
-    if (data.length == 0) return data;
+    if (data.length === 0) return data;
     const max = getMax(data);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
       countSort(data, exp);
