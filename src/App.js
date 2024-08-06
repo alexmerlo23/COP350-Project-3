@@ -23,7 +23,7 @@ function App() {
         column = 'Price (USD)';
         break;
       case 'Cost of Living Index by Country':
-        column = 'Country';
+        column = 'Cost of Living Index';
         break;
       default:
         return;
@@ -42,8 +42,8 @@ function App() {
     }
 
     // Filter out movies with null or empty names
-    let filteredData = csvData.filter(name => name && name.trim() !== '');
-    let sorted = [...filteredData];
+    //let filteredData = csvData.filter(name => name && name.trim() !== '');
+    let sorted = [...csvData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
@@ -85,13 +85,11 @@ function App() {
 
     // Get the names of the first 3 movies, or less if fewer movies exist
     const last3Movies = sorted.slice(0, 3).join(', ');
-    const topMovies = sorted.slice(-3).join(', ');
+    const topMovies = sorted.slice(-3).reverse().join(', ');
 
     // Update the results section with the time taken and the top 3 movies
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
-    document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${filteredData.length}`;
-    document.querySelector('.resultsTopMovies').textContent = `Top 3: ${topMovies}`;
-    document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Movies}`;
+    document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${csvData.length}`;
     document.querySelector('.resultsTopMovies').textContent = `Top 3: ${topMovies}`;
     document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Movies}`;
   };
@@ -217,6 +215,30 @@ function App() {
     return data;
   };
 
+  const heapify = (data, n, i) => {
+    let largest = i; // Initialize largest as root
+    let left = 2 * i + 1; // left child
+    let right = 2 * i + 2; // right child
+
+    // If left child is larger than root
+    if (left < n && data[left] > data[largest]) {
+      largest = left;
+    }
+
+    // If right child is larger than the largest so far
+    if (right < n && data[right] > data[largest]) {
+      largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+      [data[i], data[largest]] = [data[largest], data[i]]; // Swap
+
+      // Recursively heapify the affected sub-tree
+      heapify(data, n, largest);
+    }
+  };
+
   const fetchCsv = (dataType, column) => {
     let csvFile = '';
     switch(dataType) {
@@ -245,9 +267,13 @@ function App() {
         })
         .then(data => {
           const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
-          const columnData = parsedData.data.map(row => row[column]).filter(value => value !== undefined);
-          console.log('Fetched CSV Data:', columnData);
-          setCsvData(columnData);
+      const columnData = parsedData.data
+        .map(row => row[column])
+        .filter(value => typeof value === 'string' && value.trim() !== '')
+        .map(value => parseFloat(value.trim()))
+        .filter(value => !isNaN(value));
+      console.log('Fetched CSV Data:', columnData); // Debug log to check data
+      setCsvData(columnData);
         })
         .catch(error => console.error('Error fetching the CSV file:', error));
   };
