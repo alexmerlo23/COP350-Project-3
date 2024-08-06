@@ -1,4 +1,7 @@
-# Directions
+# Website
+https://project3app.netlify.app/
+
+# VsCode Directions
 Prerequisite: Have node JS downloaded
 
 1. Create a new folder
