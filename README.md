@@ -1,4 +1,6 @@
 # Directions
+prerequuisite: Have node JS downloaded
+
 1. Create a new folder
 
 2. Open folder in IDE
