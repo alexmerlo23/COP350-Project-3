@@ -1,5 +1,5 @@
 # Directions
-prerequuisite: Have node JS downloaded
+Prerequisite: Have node JS downloaded
 
 1. Create a new folder
 
