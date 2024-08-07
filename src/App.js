@@ -11,25 +11,26 @@ function App() {
 
   const handleDataTypeClick = (dataType) => {
     setSelectedDataType(dataType);
-  
+    let column = '';
+    let nameColumn = '';
+
     switch (dataType) {
       case 'Movie popularities':
         column = 'popularity';
-        break;
-      case 'Movie Name A-Z':
-        column = 'movie_name';
+        nameColumn = 'movie_name';
         break;
       case 'Cars (by price)':
         column = 'Price (USD)';
+        nameColumn = 'Model';
         break;
       case 'Cost of Living Index by Country':
         column = 'Cost of Living Index';
+        nameColumn = 'Country';
         break;
       default:
         return;
     }
-    setColumnName(column);
-    fetchCsv(dataType, column);
+    fetchCsv(dataType, column, nameColumn);
   };
 
   const handleSortTypeClick = (sortType) => {
@@ -41,9 +42,7 @@ function App() {
       return;
     }
 
-    // Filter out movies with null or empty names
-    //let filteredData = csvData.filter(name => name && name.trim() !== '');
-    sorted = [...csvData];
+    let sorted = [...csvData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
@@ -72,8 +71,6 @@ function App() {
         sorted = heapSort(sorted);
         endTime = performance.now();
         break;
-
-
       default:
         break;
     }
@@ -83,16 +80,17 @@ function App() {
 
     const timeInSeconds = (timeTaken / 1000).toFixed(6);
 
-    // Get the names of the first 3 movies, or less if fewer movies exist
-    const last3Movies = sorted.slice(0, 3).join(', ');
-    const topMovies = sorted.slice(-3).reverse().join(', ');
+    // Get the names and values of the first 3 and last 3 entries
+    const top3Entries = sorted.slice(0, 3);
+    const last3Entries = sorted.slice(-3);
 
-    // Update the results section with the time taken and the top 3 movies
+    // Update the results section with the time taken and the top 3 and last 3 entries
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
     document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${csvData.length}`;
-    document.querySelector('.resultsTopMovies').textContent = `Top 3: ${topMovies}`;
-    document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Movies}`;
+    document.querySelector('.resultsTopMovies').textContent = `Top 3: ${top3Entries.map(entry => `${entry.name}: ${entry.value}`).join(', ')}`;
+    document.querySelector('.resultsLastMovies').textContent = `Last 3: ${last3Entries.map(entry => `${entry.name}: ${entry.value}`).join(', ')}`;
   };
+
 
 
   const mergeSort = (data) => {
@@ -112,9 +110,9 @@ function App() {
     let leftIndex = 0;
     let rightIndex = 0;
 
-    // Merge the two sorted arrays into one
+    // Merge the two sorted arrays into one, comparing by the `value` property
     while (leftIndex < left.length && rightIndex < right.length) {
-      if (left[leftIndex] < right[rightIndex]) {
+      if (left[leftIndex].value < right[rightIndex].value) {
         result.push(left[leftIndex]);
         leftIndex++;
       } else {
@@ -128,13 +126,15 @@ function App() {
   };
 
 
+
   const quickSort = (data) => {
     if (data.length <= 1) return data;
     const pivot = data[Math.floor(data.length / 2)];
-    const left = data.filter(x => x < pivot);
-    const right = data.filter(x => x > pivot);
+    const left = data.filter(x => x.value < pivot.value);
+    const right = data.filter(x => x.value > pivot.value);
     return [...quickSort(left), pivot, ...quickSort(right)];
   };
+
 
   const shellSort = (data) => {
     let n = data.length;
@@ -143,7 +143,7 @@ function App() {
       for (let i = gap; i < n; i++) {
         let temp = data[i];
         let j;
-        for (j = i; j >= gap && data[j - gap] > temp; j -= gap) {
+        for (j = i; j >= gap && data[j - gap].value > temp.value; j -= gap) {
           data[j] = data[j - gap];
         }
         data[j] = temp;
@@ -153,11 +153,12 @@ function App() {
     return data;
   };
 
-  const getMax = (data) => {
-    let max = data[0];
+
+  const getMaxValue = (data) => {
+    let max = data[0].value;
     for (let i = 1; i < data.length; i++) {
-      if (data[i] > max) {
-        max = data[i];
+      if (data[i].value > max) {
+        max = data[i].value;
       }
     }
     return max;
@@ -165,20 +166,20 @@ function App() {
 
   const countSort = (data, exp) => {
     const n = data.length;
-    const output = new Array(n).fill(0);  
-    const count = new Array(10).fill(0);  
+    const output = new Array(n).fill(null);
+    const count = new Array(10).fill(0);
 
     for (let i = 0; i < n; i++) {
-      const index = Math.floor(data[i] / exp) % 10;
+      const index = Math.floor(data[i].value / exp) % 10;
       count[index]++;
     }
-    
+
     for (let i = 1; i < 10; i++) {
       count[i] += count[i - 1];
     }
 
     for (let i = n - 1; i >= 0; i--) {
-      const index = Math.floor(data[i] / exp) % 10;
+      const index = Math.floor(data[i].value / exp) % 10;
       output[count[index] - 1] = data[i];
       count[index]--;
     }
@@ -187,14 +188,16 @@ function App() {
       data[i] = output[i];
     }
   };
+
   const radixSort = (data) => {
     if (data.length === 0) return data;
-    const max = getMax(data);
+    const max = getMaxValue(data);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
       countSort(data, exp);
     }
     return data;
   };
+
 
   const heapSort = (data) => {
     const n = data.length;
@@ -217,16 +220,16 @@ function App() {
 
   const heapify = (data, n, i) => {
     let largest = i; // Initialize largest as root
-    let left = 2 * i + 1; // left child
-    let right = 2 * i + 2; // right child
+    const left = 2 * i + 1; // left child
+    const right = 2 * i + 2; // right child
 
     // If left child is larger than root
-    if (left < n && data[left] > data[largest]) {
+    if (left < n && data[left].value > data[largest].value) {
       largest = left;
     }
 
     // If right child is larger than the largest so far
-    if (right < n && data[right] > data[largest]) {
+    if (right < n && data[right].value > data[largest].value) {
       largest = right;
     }
 
@@ -239,13 +242,11 @@ function App() {
     }
   };
 
-  const fetchCsv = (dataType, column) => {
+
+  const fetchCsv = (dataType, column, nameColumn) => {
     let csvFile = '';
     switch(dataType) {
       case 'Movie popularities':
-        csvFile = './cleaned_movie_data.csv';
-        break;
-      case 'Movie Name A-Z':
         csvFile = './cleaned_movie_data.csv';
         break;
       case 'Cars (by price)':
@@ -267,15 +268,15 @@ function App() {
         })
         .then(data => {
           const parsedData = Papa.parse(data, { header: true, skipEmptyLines: true });
-      const columnData = parsedData.data
-        .map(row => row[column])
-        .filter(value => typeof value === 'string' && value.trim() !== '')
-        .map(value => parseFloat(value.trim()))
-        .filter(value => !isNaN(value));
-      console.log('Fetched CSV Data:', columnData); // Debug log to check data
-      setCsvData(columnData);
+          const columnData = parsedData.data
+              .filter(row => row[column] !== undefined && row[column] !== null)
+              .map(row => ({
+                name: row[nameColumn],
+                value: parseFloat(row[column]),
+              }));
+          setCsvData(columnData);
         })
-        .catch(error => console.error('Error fetching the CSV file:', error));
+        .catch(error => console.error('There was a problem with your fetch operation:', error));
   };
 
   const buttonClass = (type, selectedType) => {
@@ -301,7 +302,6 @@ function App() {
             <div className='sectionTitle'>Data Type</div>
             <div className='sortButtonsContainer'>
               <button className={buttonClass('Movie popularities', selectedDataType)} onClick={() => handleDataTypeClick('Movie popularities')}>Movie popularities</button>
-              <button className={buttonClass('Movie Name A-Z', selectedDataType)} onClick={() => handleDataTypeClick('Movie Name A-Z')}>Movie Name</button>
               <button className={buttonClass('Cars (by price)', selectedDataType)} onClick={() => handleDataTypeClick('Cars (by price)')}>Cars (by price)</button>
               <button className={buttonClass('Cost of Living Index by Country', selectedDataType)} onClick={() => handleDataTypeClick('Cost of Living Index by Country')}>Cost of Living Index by Country</button>
             </div>
