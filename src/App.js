@@ -7,7 +7,7 @@ function App() {
   const [selectedDataType, setSelectedDataType] = useState('');
   const [selectedSortType, setSelectedSortType] = useState('');
   let [sorted, setSortedData] = useState(null);
-  let [column, setColumnName] = useState('');
+  
 
   const handleDataTypeClick = (dataType) => {
     setSelectedDataType(dataType);
@@ -42,33 +42,33 @@ function App() {
       return;
     }
 
-    let sorted = [...csvData];
+    let Data = [...csvData];
     let startTime, endTime, timeTaken;
 
     switch (selectedSortType) {
       case 'Merge sort':
         startTime = performance.now();
-        sorted = mergeSort(sorted);
+        sorted = mergeSort(Data);
         endTime = performance.now();
         break;
       case 'Quick sort':
         startTime = performance.now();
-        sorted = quickSort(sorted);
+        sorted = quickSort(Data);
         endTime = performance.now();
         break;
       case 'Shell sort':
         startTime = performance.now();
-        sorted = shellSort(sorted);
+        sorted = shellSort(Data);
         endTime = performance.now();
         break;
       case 'Radix sort':
         startTime = performance.now();
-        sorted = radixSort(sorted);
+        sorted = radixSort(Data);
         endTime = performance.now();
         break;
       case 'Heap sort':
         startTime = performance.now();
-        sorted = heapSort(sorted);
+        sorted = heapSort(Data);
         endTime = performance.now();
         break;
       default:
