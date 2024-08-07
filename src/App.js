@@ -80,11 +80,9 @@ function App() {
 
     const timeInSeconds = (timeTaken / 1000).toFixed(6);
 
-    // Get the names and values of the first 3 and last 3 entries
-    const top3Entries = sorted.slice(0, 3);
-    const last3Entries = sorted.slice(-3);
+    const last3Entries = sorted.slice(0, 3);
+    const top3Entries = sorted.slice(-3).reverse();
 
-    // Update the results section with the time taken and the top 3 and last 3 entries
     document.querySelector('.resultsTime').textContent = `Time: ${timeInSeconds} seconds`;
     document.querySelector('.resultsTuples').textContent = `Tuples sorted: ${csvData.length}`;
     document.querySelector('.resultsTopMovies').textContent = `Top 3: ${top3Entries.map(entry => `${entry.name}: ${entry.value}`).join(', ')}`;
@@ -110,7 +108,6 @@ function App() {
     let leftIndex = 0;
     let rightIndex = 0;
 
-    // Merge the two sorted arrays into one, comparing by the `value` property
     while (leftIndex < left.length && rightIndex < right.length) {
       if (left[leftIndex].value < right[rightIndex].value) {
         result.push(left[leftIndex]);
@@ -121,7 +118,6 @@ function App() {
       }
     }
 
-    // Concatenate any remaining elements
     return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   };
 
@@ -202,16 +198,12 @@ function App() {
   const heapSort = (data) => {
     const n = data.length;
 
-    // Build a max heap
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
       heapify(data, n, i);
     }
 
-    // Extract elements from the heap one by one
     for (let i = n - 1; i > 0; i--) {
-      // Move the current root (maximum) to the end
       [data[0], data[i]] = [data[i], data[0]];
-      // Call max heapify on the reduced heap
       heapify(data, i, 0);
     }
 
@@ -219,25 +211,21 @@ function App() {
   };
 
   const heapify = (data, n, i) => {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left child
-    const right = 2 * i + 2; // right child
+    let largest = i; 
+    const left = 2 * i + 1; 
+    const right = 2 * i + 2; 
 
-    // If left child is larger than root
     if (left < n && data[left].value > data[largest].value) {
       largest = left;
     }
 
-    // If right child is larger than the largest so far
     if (right < n && data[right].value > data[largest].value) {
       largest = right;
     }
 
-    // If largest is not root
     if (largest !== i) {
-      [data[i], data[largest]] = [data[largest], data[i]]; // Swap
+      [data[i], data[largest]] = [data[largest], data[i]];
 
-      // Recursively heapify the affected sub-tree
       heapify(data, n, largest);
     }
   };
@@ -253,7 +241,7 @@ function App() {
         csvFile = './cleaned_car_data.csv';
         break;
       case 'Cost of Living Index by Country':
-        csvFile = './Cost_of_Living_Index_by_Country_2024.csv';  //file name may be changed
+        csvFile = './Cost_of_Living_Index_by_Country_2024.csv';
         break;
       default:
         return;

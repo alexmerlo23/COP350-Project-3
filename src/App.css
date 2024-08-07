@@ -22,8 +22,8 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 150px; /* Adjust the size as needed */
-  height: 90px; /* Adjust the size as needed */
+  width: 150px; 
+  height: 90px; 
 }
 
 .sectionsContainer {
@@ -49,9 +49,9 @@
   height: 90%;
   background-color: white;
   display: flex;
-  flex-direction: column; /* Allow vertical stacking */
-  justify-content: flex-start; /* Align content to the top */
-  align-items: center; /* Center horizontally */
+  flex-direction: column; 
+  justify-content: flex-start; 
+  align-items: center; 
   color: black;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -59,23 +59,23 @@
 }
 
 .sectionTitle {
-  margin-bottom: 5%; /* Reduced margin to separate from the buttons container */
-  font-size: 22px; /* Adjust font size if necessary */
+  margin-bottom: 5%;
+  font-size: 22px; 
   font-weight: 700;
 }
 
 .sortButtonsContainer {
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
+  flex-direction: column; 
   width: 90%;
   margin-top: 10px;
-  margin-bottom: 4%; /* Adjust margin to ensure proper spacing */
+  margin-bottom: 4%; 
 }
 
 .sortButton {
   width: 100%;
   padding: 15px;
-  margin-bottom: 15px; /* Adjust margin to ensure proper spacing */
+  margin-bottom: 15px; 
   background-color: #969fa8;
   color: black;
   border-radius: 3px;
@@ -85,7 +85,7 @@
 }
 
 .sortButton:last-child {
-  margin-bottom: 0; /* Remove bottom margin for the last button */
+  margin-bottom: 0; 
 }
 
 .sortButton:hover {
@@ -103,7 +103,7 @@
   width: 90%;
   height: 50%;
   margin-top: 10%;
-  align-items: left; /* Center horizontally */
+  align-items: left;
 }
 
 .resultsText {
@@ -115,7 +115,7 @@
 .submitButton{
   width: 50%;
   padding: 5px;
-  margin-top: 35%;
+  margin-top: 25%;
   margin-bottom: 5%;
   margin-left: 25%;
   background-color: chartreuse;
@@ -126,4 +126,12 @@
 
 .submitButton:hover{
   background-color: rgb(86, 172, 0);
+}
+
+.resultsTopMovies{
+  margin-top: 10%;
+}
+
+.resultsLastMovies{
+  margin-top: 2%;
 }
